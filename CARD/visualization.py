@@ -123,8 +123,8 @@ def CARD_visualize_prop(proportion, spatial_location, ct_visualize, colors=["lig
     num_cols = min(4, num_plots)  # Maximum of 4 columns
     
     # Create a plot for each cell type
-    fig, axes = plt.subplots(num_rows, num_cols, figsize=(4*num_cols, 3*num_rows), sharex='col', sharey='row', gridspec_kw={'hspace': 0.16, 'wspace': 0.1})
-    
+    fig, axes = plt.subplots(num_rows, num_cols, figsize=(4*num_cols, 3*num_rows), sharex='col', sharey='row', squeeze=False, gridspec_kw={'hspace': 0.16, 'wspace': 0.1})
+        
     custom_cmap = create_custom_colormap(colors)
     
     for i, cell_type in enumerate(ct_visualize):
@@ -136,7 +136,7 @@ def CARD_visualize_prop(proportion, spatial_location, ct_visualize, colors=["lig
         cell_data = res_CARD_scale[['x', 'y', cell_type]]
         
         # Plotting
-        ax = axes[row_index, col_index] if num_plots > 1 else axes
+        ax = axes[row_index, col_index]
         sc = ax.scatter(cell_data['x'], cell_data['y'], c=cell_data[cell_type], cmap=custom_cmap, s=point_size)
         
         # Set plot properties
@@ -346,7 +346,7 @@ def CARD_visualize_pie(proportion, spatial_location, colors=None, radius=None, s
     for index in location.index:
         row = location.loc[index]
         x, y = row['x'], row['y']
-        dist = res_CARD.iloc[index].values
+        dist = res_CARD.loc[index].values
         draw_pie(dist, x, y, size=radius, colors=colors, ax=axes)
         
     # Set plot properties
