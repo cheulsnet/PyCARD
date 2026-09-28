@@ -10,7 +10,6 @@
 ####################################################################################################
 import matplotlib.pyplot as plt
 import pandas as pd
-import os
 
 from CARD.utilities import create_CARDObject
 from CARD.utilities import create_CARDfreeObject
@@ -96,11 +95,13 @@ def _run_CARD_imputation(CARD_obj, num_grids=2000, in_neighbor=10, exclude=None,
     return CARD_obj
 
 
-def _run_CARDfree_deconvolution(spatial_count, spatial_location, nmfSelect):
-    current_dir = os.path.dirname(__file__)
-    csv_file_path = os.path.join(current_dir, "..", "data", "markerList.csv")
-
-    markerList_df = pd.read_csv(csv_file_path)
+def _run_CARDfree_deconvolution(
+    spatial_count,
+    spatial_location,
+    nmfSelect,
+    marker_list_path,
+):
+    markerList_df = pd.read_csv(marker_list_path)
     markerList = [markerList_df[column].tolist() for column in markerList_df.columns]
 
     CARDfree_obj = create_CARDfreeObject(

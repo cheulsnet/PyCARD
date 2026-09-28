@@ -11,8 +11,8 @@
 ##      python main.py --run-scmapping --run-imputation
 ##
 ## (CARDfree only)
-##      python main.py --run-cardfree --set-r-libs-user ~/R/library  (if NFM is not installed)
-##      python main.py --run-cardfree (if NFM is already installed)
+##      python main.py --run-cardfree --set-r-libs-user ~/R/library  (if the R library path must be specified explicitly)
+##      python main.py --run-cardfree  (if the required R packages are already discoverable)
 ##
 ####################################################################################################
 
@@ -44,7 +44,7 @@ def parse_args():
     parser.add_argument("--set-r-libs-user", default=None,
                         help="Optional R_LIBS_USER path for stable R package lookup, e.g. ~/R/library")
 
-    parser.add_argument("--run-deconvolution", action="store_true", default=True,
+    parser.add_argument("--run-deconvolution", action="store_true",
                         help="Run standard CARD deconvolution")
     parser.add_argument("--run-scmapping", action="store_true",
                         help="Run CARD scMapping")
@@ -83,13 +83,32 @@ def main():
     if args.set_r_libs_user:
         os.environ["R_LIBS_USER"] = os.path.expanduser(args.set_r_libs_user)
 
+    # Determine which workflow(s) should run.
+    # Standard CARD runs by default when no explicit workflow is selected.
+    run_standard_card = (
+        args.run_deconvolution
+        or args.run_scmapping
+        or args.run_imputation
+        or not (
+            args.run_deconvolution
+            or args.run_scmapping
+            or args.run_imputation
+            or args.run_cardfree
+        )
+    )
+
     phi_grid = parse_phi_grid(args.phi_grid)
 
     #### load data
     spatial_count = _load_data(f"{args.data_dir}/spatial_count.csv", "csv")
     spatial_location = _load_data(f"{args.data_dir}/spatial_location.csv", "csv")
-    sc_count = _load_data(f"{args.data_dir}/sc_count.csv", "csv")
-    sc_meta = _load_data(f"{args.data_dir}/sc_meta.csv", "csv")
+
+    sc_count = None
+    sc_meta = None
+
+    if run_standard_card:
+        sc_count = _load_data(f"{args.data_dir}/sc_count.csv", "csv")
+        sc_meta = _load_data(f"{args.data_dir}/sc_meta.csv", "csv")
 
     ## visualization settings
     colors = [
@@ -109,7 +128,7 @@ def main():
     CARD_obj = None
 
     #### standard CARD deconvolution
-    if args.run_deconvolution:
+    if run_standard_card:
         CARD_obj = _run_CARD_deconvolution(
             sc_count=sc_count,
             sc_meta=sc_meta,
@@ -203,10 +222,13 @@ def main():
 
     #### CARDfree
     if args.run_cardfree:
+        marker_list_path = os.path.join(args.data_dir, "markerList.csv")
+
         CARDfree_obj = _run_CARDfree_deconvolution(
             spatial_count=spatial_count,
             spatial_location=spatial_location,
             nmfSelect=args.cardfree_nmf_select,
+            marker_list_path=marker_list_path,
         )
 
         if args.verbose:

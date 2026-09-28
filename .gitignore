@@ -97,8 +97,6 @@ compile_commands.json
 *.backup
 *~
 
-# ============================================================
-# Large input / benchmark datasets
-# ============================================================
-
-data/
+# Local release-candidate packaging artifacts
+PyCARD_release_candidate/
+PyCARD_release_candidate.zip
