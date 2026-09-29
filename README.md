@@ -876,7 +876,6 @@ https://github.com/YMa-lab/CARD/tree/master/data
 
 Because `data/sc_count.csv` exceeds GitHub's normal per-file size limit, it is distributed through Git LFS.
 
-A permanent archival release of PyCARD Version 1.0.1 is intended to be deposited in Zenodo. The DOI should be added here and to the STAR Protocols manuscript after the archive has been created.
 
 # License
 
