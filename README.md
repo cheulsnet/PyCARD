@@ -329,7 +329,9 @@ The benchmark dataset included under `data/` is the same dataset used for compar
 
 https://github.com/YMa-lab/CARD/tree/master/data
 
-Because `data/sc_count.csv` exceeds GitHub's regular per-file size limit, it is managed using Git LFS. After cloning the repository:
+Because `data/sc_count.csv` exceeds GitHub's regular per-file size limit, it is managed using Git LFS. For users who prefer a self-contained release package without requiring Git LFS, the GitHub Release also provides `PyCARD-v1.0.1-full.zip`. This archive contains the complete Version 1.0.1 source tree together with the full benchmark dataset, including `data/sc_count.csv`.
+
+After cloning the repository:
 
 ```bash
 git lfs install
